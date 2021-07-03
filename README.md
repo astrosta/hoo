@@ -1,6 +1,7 @@
-#hoo Web框架
+#简单Web框架hoo
 
-##quickly strart
+##Quickly strart
+
 ```go
 package main
 
