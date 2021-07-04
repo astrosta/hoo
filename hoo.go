@@ -22,12 +22,20 @@ func handleFuncConvert(handleFunc HandleFunc) httprouter.Handle {
 //Engine implement the interface of ServerHttp
 type Engine struct {
 	router *httprouter.Router
+	*RouterGroup
+	groups []*RouterGroup
 }
 
 func New() *Engine {
-	return &Engine{
+	engine := &Engine{
 		router: httprouter.New(),
 	}
+	engine.RouterGroup = &RouterGroup{
+		engine: engine,
+	}
+	engine.groups = []*RouterGroup{engine.RouterGroup}
+
+	return engine
 }
 
 func (engine *Engine) GET(path string, handler HandleFunc) {
