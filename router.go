@@ -5,28 +5,31 @@
 
 package hoo
 
-import "fmt"
+import (
+	"github.com/julienschmidt/httprouter"
+)
 
 type router struct {
-	handlers map[string]HandleFunc
+	//handlers map[string]HandleFunc
+	router *httprouter.Router
 }
 
 func newRouter() *router {
 	return &router{
-		handlers: make(map[string]HandleFunc),
+		router: httprouter.New(),
 	}
 }
 
-func (r *router) addRoute(method, pattern string, handler HandleFunc) {
-	key := method + "-" + pattern
-	r.handlers[key] = handler
-}
+//func (r *router) addRoute(method, pattern string, handler HandleFunc) {
+//	key := method + "-" + pattern
+//	r.handlers[key] = handler
+//}
 
-func (r *router) handle(ctx *Context) {
-	key := ctx.Method + "-" + ctx.Path
-	if handler, ok := r.handlers[key]; ok {
-		handler(ctx)
-	} else {
-		fmt.Fprintf(ctx.Writer, "404 NOT FOUND:%s", ctx.Req.URL)
-	}
-}
+//func (r *router) handle(ctx *Context) {
+//	key := ctx.Method + "-" + ctx.Path
+//	if handler, ok := r.handlers[key]; ok {
+//		handler(ctx)
+//	} else {
+//		fmt.Fprintf(ctx.Writer, "404 NOT FOUND:%s", ctx.Req.URL)
+//	}
+//}

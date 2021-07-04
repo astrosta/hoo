@@ -13,11 +13,14 @@ import (
 )
 
 type Context struct {
-	Writer     http.ResponseWriter
-	Req        *http.Request
-	Path       string
-	Method     string
-	StatusCode int //response info
+	Writer http.ResponseWriter
+	//request info
+	Req    *http.Request
+	Path   string
+	Method string
+	Params map[string]string
+	//response info
+	StatusCode int
 }
 
 func newContext(w http.ResponseWriter, r *http.Request) *Context {
@@ -26,12 +29,17 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 		Req:    r,
 		Path:   r.URL.Path,
 		Method: r.Method,
+		Params: make(map[string]string),
 	}
 }
 
 func (c *Context) PostForm(key string) string {
 	//fmt.Println(c.Req.Form)
 	return c.Req.FormValue(key)
+}
+
+func (c *Context) Param(key string) string {
+	return c.Params[key]
 }
 
 func (c *Context) Query(key string) string {

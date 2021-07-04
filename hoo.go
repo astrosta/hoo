@@ -2,28 +2,40 @@ package hoo
 
 import (
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 //HandleFunc defines the request handler
 type HandleFunc func(ctx *Context)
 
+func handleFuncConvert(handleFunc HandleFunc) httprouter.Handle {
+	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+		ctx := newContext(writer, request)
+		for _, value := range params {
+			ctx.Params[value.Key] = value.Value
+		}
+		handleFunc(ctx)
+	}
+}
+
 //Engine implement the interface of ServerHttp
 type Engine struct {
-	router *router
+	router *httprouter.Router
 }
 
 func New() *Engine {
 	return &Engine{
-		router: newRouter(),
+		router: httprouter.New(),
 	}
 }
 
-func (engine *Engine) GET(pattern string, handler HandleFunc) {
-	engine.router.addRoute(http.MethodGet, pattern, handler)
+func (engine *Engine) GET(path string, handler HandleFunc) {
+	engine.router.GET(path, handleFuncConvert(handler))
 }
 
-func (engine *Engine) POST(pattern string, handler HandleFunc) {
-	engine.router.addRoute(http.MethodPost, pattern, handler)
+func (engine *Engine) POST(path string, handler HandleFunc) {
+	engine.router.POST(path, handleFuncConvert(handler))
 }
 
 func (engine *Engine) Run(addr string) {
@@ -31,6 +43,5 @@ func (engine *Engine) Run(addr string) {
 }
 
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ctx := newContext(w, r)
-	engine.router.handle(ctx)
+	engine.router.ServeHTTP(w, r)
 }
