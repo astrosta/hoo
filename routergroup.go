@@ -28,6 +28,6 @@ func (rg *RouterGroup) POST(path string, handler HandleFunc) {
 	rg.engine.POST(p, handler)
 }
 
-func (rg *RouterGroup) Use(m middleware) {
-	rg.middlewareChain = append(rg.middlewareChain, m)
+func (rg *RouterGroup) Use(m ...middleware) {
+	rg.middlewareChain = append(rg.middlewareChain, m...)
 }
