@@ -1,10 +1,10 @@
 package hoo
 
 type RouterGroup struct {
-	prefix     string
-	middleware []HandleFunc
-	parent     *RouterGroup
-	engine     *Engine
+	prefix          string
+	middlewareChain []middleware
+	parent          *RouterGroup
+	engine          *Engine
 }
 
 func (rg *RouterGroup) Group(prefix string) *RouterGroup {
@@ -26,4 +26,8 @@ func (rg *RouterGroup) GET(path string, handler HandleFunc) {
 func (rg *RouterGroup) POST(path string, handler HandleFunc) {
 	p := rg.prefix + path
 	rg.engine.POST(p, handler)
+}
+
+func (rg *RouterGroup) Use(m middleware) {
+	rg.middlewareChain = append(rg.middlewareChain, m)
 }

@@ -14,6 +14,7 @@ import (
 
 type Context struct {
 	Writer http.ResponseWriter
+
 	//request info
 	Req    *http.Request
 	Path   string
